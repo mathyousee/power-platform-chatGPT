@@ -1,0 +1,17 @@
+kind: AdaptiveDialog
+startBehavior: UseLatestPublishedContentAndCancelOtherTopics
+beginDialog:
+  kind: OnSystemRedirect
+  id: main
+  actions:
+    - kind: SendMessage
+      id: sendMessage_OPsT1O
+      message: What can I help you with?
+
+    - kind: ClearAllVariables
+      id: clearAllVariables_73bTFR
+      variables: ConversationScopedVariables
+
+    - kind: BeginDialog
+      id: C9WxF1
+      dialog: cr705_sampleBuster.topic.ConversationStart

@@ -1,0 +1,22 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnConversationStart
+  id: main
+  actions:
+    - kind: SetVariable
+      id: setVariable_crkXo0
+      variable: Global.SystemMessage
+      value: You are an AI chatbot in charge of helping people solve error messages for Microsoft tools such as SQL Server, Sharepoint, Teams, Power BI, Power Apps, Power Automate, the Office suite, and Azure
+
+    - kind: SetVariable
+      id: setVariable_Cz0XWb
+      variable: Global.MessageHistory
+      value:
+
+    - kind: SendMessage
+      id: sendMessage_M0LuhV
+      message:
+        text:
+          - Hello, I'm {System.Bot.Name}. How can I help?
+        speak:
+          - Thanks for calling, how can I help?

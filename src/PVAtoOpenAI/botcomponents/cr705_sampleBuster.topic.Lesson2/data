@@ -1,0 +1,65 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    displayName: Lesson 2 - A simple topic with a condition and variable
+    triggerQueries:
+      - Find my nearest store
+      - Check store location
+      - Find a store
+      - Find me your nearest location
+      - Store near me
+
+  actions:
+    - kind: SendMessage
+      id: qvduia
+      message: I'd be glad to help find a store near you.
+
+    - kind: Question
+      id: LbWwpD
+      alwaysPrompt: true
+      variable: init:Topic.StoreLocation
+      prompt: Which location are you interested in?
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          smartMatchingEnabled: true
+          items:
+            - id: dc91002e-5c32-4b0e-9109-376c2d9b2eb2
+              displayName: Redmond
+
+            - id: 00a18877-1153-4a7e-9773-4f68632adbe1
+              displayName: Seattle
+
+            - id: e7eeb96b-6ba0-438a-b76e-38ce7b0ee67e
+              displayName: Kirkland
+
+    - kind: ConditionGroup
+      id: HE6JRU
+      conditions:
+        - id: 6G9Hhn
+          condition: =Topic.StoreLocation = 'cr705_sampleBuster.topic.Lesson2.main.LbWwpD'.'dc91002e-5c32-4b0e-9109-376c2d9b2eb2'
+          actions:
+            - kind: SendMessage
+              id: khIIPE
+              message: "Check out the Company Store at our Visitor Center. The address is: 4567 Main St., Redmond, 26132."
+
+        - id: dqf7pu
+          condition: =Topic.StoreLocation = 'cr705_sampleBuster.topic.Lesson2.main.LbWwpD'.'00a18877-1153-4a7e-9773-4f68632adbe1'
+          actions:
+            - kind: SendMessage
+              id: X7eulp
+              message: "Our {Topic.StoreLocation} store is located in the U District in the University Village. The address is: 1234 E. University Village St., Seattle, 34567."
+
+        - id: 1QMrFE
+          condition: =Topic.StoreLocation = 'cr705_sampleBuster.topic.Lesson2.main.LbWwpD'.'e7eeb96b-6ba0-438a-b76e-38ce7b0ee67e'
+          actions:
+            - kind: SendMessage
+              id: jtQo0O
+              message: "Our {Topic.StoreLocation} is located in downtown Kirkland. The address is: 1234 Central Way, Kirkland, 98321."
+
+    - kind: BeginDialog
+      id: mJXqqY
+      dialog: cr705_sampleBuster.topic.EndofConversation

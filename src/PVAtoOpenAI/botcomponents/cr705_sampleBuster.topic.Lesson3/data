@@ -1,0 +1,116 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    displayName: Lesson 3 - A topic with a condition, variables and a pre-built entity
+    triggerQueries:
+      - Buy items
+      - Buy online
+      - Buy product
+      - Purchase item
+      - Order product
+
+  actions:
+    - kind: SendMessage
+      id: Sjghab
+      message: I am happy to help you place your order.
+
+    - kind: Question
+      id: eRH3BJ
+      alwaysPrompt: false
+      variable: init:Topic.State
+      prompt: To what state will you be shipping?
+      entity: StatePrebuiltEntity
+
+    - kind: ConditionGroup
+      id: sEzulE
+      conditions:
+        - id: pbR5LO
+          condition: =Topic.State = "California" || Topic.State = "Washington" || Topic.State = "Oregon"
+
+      elseActions:
+        - kind: SendMessage
+          id: X7BFUC
+          message: There will be an additional shipping charge of $27.50.
+
+        - kind: Question
+          id: 6lyBi8
+          alwaysPrompt: false
+          variable: init:Topic.ShippingRateAccepted
+          prompt: Is that acceptable?
+          entity: BooleanPrebuiltEntity
+
+        - kind: ConditionGroup
+          id: 9BR57P
+          conditions:
+            - id: BW47C4
+              condition: =Topic.ShippingRateAccepted = true
+
+          elseActions:
+            - kind: SendMessage
+              id: LMwySU
+              message: Thank you and please come again.
+
+            - kind: BeginDialog
+              id: 26GAbP
+              dialog: cr705_sampleBuster.topic.EndofConversation
+
+    - kind: Question
+      id: mgz1sJ
+      alwaysPrompt: true
+      variable: init:Topic.Item
+      prompt: What item are you interested in purchasing? We are focused on a few quality items.
+      entity:
+        kind: EmbeddedEntity
+        definition:
+          kind: ClosedListEntity
+          smartMatchingEnabled: true
+          items:
+            - id: a55271b8-47fb-4a81-9030-15e4ec7a6132
+              displayName: Desktop Computer
+
+            - id: 31f5ecbd-a23a-451e-8e28-1b74d8a052e0
+              displayName: Laptop Computer
+
+            - id: 73d880d8-2568-45c8-ad62-8e0e472d52b9
+              displayName: Gaming Computer
+
+    - kind: ConditionGroup
+      id: 0qsIib
+      conditions:
+        - id: 1WP5jv
+          condition: =Topic.Item = 'cr705_sampleBuster.topic.Lesson3.main.mgz1sJ'.'a55271b8-47fb-4a81-9030-15e4ec7a6132'
+          actions:
+            - kind: SendMessage
+              id: PjNoWL
+              message: Great choice for the desktop publisher!
+
+        - id: qI8gc3
+          condition: =Topic.Item = 'cr705_sampleBuster.topic.Lesson3.main.mgz1sJ'.'31f5ecbd-a23a-451e-8e28-1b74d8a052e0'
+          actions:
+            - kind: SendMessage
+              id: vj6Vbx
+              message: Great choice for the on-the-go road warrior!
+
+        - id: d7d1mq
+          condition: =Topic.Item = 'cr705_sampleBuster.topic.Lesson3.main.mgz1sJ'.'73d880d8-2568-45c8-ad62-8e0e472d52b9'
+          actions:
+            - kind: SendMessage
+              id: 25VVXi
+              message: Go get 'em tiger! Sudoku helps keep the mind active.
+
+    - kind: SendMessage
+      id: L3bEHg
+      message: I am adding {Topic.Item} to your cart.
+
+    - kind: SendMessage
+      id: 529q62
+      message: |-
+        To complete your order, please go to your cart.
+        
+        Thank you!
+
+    - kind: BeginDialog
+      id: wn9EyA
+      dialog: cr705_sampleBuster.topic.EndofConversation

@@ -1,0 +1,10 @@
+<botcomponent schemaname="cr705_sampleBuster.topic.Lesson2">
+  <componenttype>9</componenttype>
+  <iscustomizable>0</iscustomizable>
+  <name>Lesson 2 - A simple topic with a condition and variable</name>
+  <parentbotid>
+    <schemaname>cr705_sampleBuster</schemaname>
+  </parentbotid>
+  <statecode>1</statecode>
+  <statuscode>2</statuscode>
+</botcomponent>

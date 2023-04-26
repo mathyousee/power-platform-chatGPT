@@ -1,0 +1,20 @@
+<bot schemaname="cr705_sampleBuster">
+  <authenticationmode>1</authenticationmode>
+  <authenticationtrigger>0</authenticationtrigger>
+  <iscustomizable>0</iscustomizable>
+  <language>1033</language>
+  <name>Sample - Buster</name>
+  <runtimeprovider>0</runtimeprovider>
+  <synchronizationstatus>{
+  "contentVersion": 2,
+  "lastFinishedPublishOperation": {
+    "userId": "df50148d-3702-4ac9-aee5-3a9699723947",
+    "operationStart": "2023-04-26T00:46:03.6645146Z",
+    "operationEnd": "2023-04-26T00:46:07.4195519Z",
+    "status": "Succeeded"
+  },
+  "lastPublishedOnUtc": "2023-04-26T00:46:06Z"
+}</synchronizationstatus>
+  <template>default-2.0.0</template>
+  <timezoneruleversionnumber>0</timezoneruleversionnumber>
+</bot>

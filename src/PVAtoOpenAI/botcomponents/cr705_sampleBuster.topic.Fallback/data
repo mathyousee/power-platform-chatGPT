@@ -1,0 +1,28 @@
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnUnknownIntent
+  id: main
+  actions:
+    - kind: InvokeFlowAction
+      id: invokeFlowAction_e1l6hQ
+      input:
+        binding:
+          text: =System.LastMessage.Text
+          text_1: =Global.MessageHistory
+          text_2: =Global.SystemMessage
+
+      output:
+        binding:
+          newmessagehistory: Topic.newMessageHistory
+          response: Topic.response
+
+      flowId: b9074813-c8e3-ed11-a7c7-000d3a8b7840
+
+    - kind: SendMessage
+      id: sendMessage_yAcZKd
+      message: "{Topic.response}"
+
+    - kind: SetVariable
+      id: setVariable_Vf6NxC
+      variable: Global.MessageHistory
+      value: =Topic.newMessageHistory

@@ -1,0 +1,398 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "def478d0-ddca-4755-963f-6f4c9afc6bd7"
+          },
+          "type": "Request",
+          "kind": "VirtualAgent",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "userMessage",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "The user's message sent to ChatGPT",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_1": {
+                  "title": "messageHistory",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "the json history of the message",
+                  "x-ms-content-hint": "TEXT"
+                },
+                "text_2": {
+                  "title": "systemMessage",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "the system message",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text",
+                "text_1",
+                "text_2"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Return_value(s)_to_Power_Virtual_Agents": {
+          "runAfter": {
+            "Create_New_Chat_History": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "20ef674e-7264-4e00-871d-b97a2dfaafa4"
+          },
+          "type": "Response",
+          "kind": "VirtualAgent",
+          "inputs": {
+            "statusCode": 200,
+            "body": {
+              "response": "@variables('Response Value')",
+              "newmessagehistory": "@variables('NewChatHistory')"
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "response": {
+                  "title": "response",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                },
+                "newmessagehistory": {
+                  "title": "newMessageHistory",
+                  "x-ms-dynamically-added": true,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "System_message": {
+          "runAfter": {
+            "Azure_ChatGPT_URI": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0679a09a-e863-4ca7-9c0c-c6c503875802"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "System message",
+                "type": "string",
+                "value": "     {\n      \"role\": \"system\",\n      \"content\": \"@{triggerBody()['text_2']}\"\n    },"
+              }
+            ]
+          }
+        },
+        "Azure_ChatGPT_URI": {
+          "runAfter": {
+            "Preprocess_user_message": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e6586faf-daa6-43a4-95be-97e24784c710"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "URI",
+                "type": "string",
+                "value": "https://ENDPOINT.openai.azure.com/openai/deployments/DEPLOYMENT/chat/completions?api-version=2023-03-15-preview"
+              }
+            ]
+          }
+        },
+        "HTTP": {
+          "runAfter": {
+            "Create_HTTP_body": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "269c6483-96b2-4204-9d8f-f643e5775d1b"
+          },
+          "type": "Http",
+          "inputs": {
+            "method": "POST",
+            "uri": "@variables('URI')",
+            "headers": {
+              "Content-Type": "application/json",
+              "api-key": "REPLACEWITHAPIKEY"
+            },
+            "body": "@variables('httpBody')"
+          }
+        },
+        "Parse_JSON": {
+          "runAfter": {
+            "HTTP": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8a104234-3d5d-4109-b0d9-f6d1656b5bb8"
+          },
+          "type": "ParseJson",
+          "inputs": {
+            "content": "@body('HTTP')",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "choices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "finish_reason": {
+                        "type": "string"
+                      },
+                      "index": {
+                        "type": "integer"
+                      },
+                      "message": {
+                        "type": "object",
+                        "properties": {
+                          "content": {
+                            "type": "string"
+                          },
+                          "role": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "finish_reason",
+                      "index",
+                      "message"
+                    ]
+                  }
+                },
+                "created": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "object": {
+                  "type": "string"
+                },
+                "usage": {
+                  "type": "object",
+                  "properties": {
+                    "completion_tokens": {
+                      "type": "integer"
+                    },
+                    "prompt_tokens": {
+                      "type": "integer"
+                    },
+                    "total_tokens": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Get_first_choice_response": {
+          "runAfter": {
+            "Parse_JSON": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "02446710-69ab-4956-a112-c68858391e20"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Response Value",
+                "type": "string",
+                "value": "@{first(body('Parse_JSON')?['choices']).message.content}"
+              }
+            ]
+          }
+        },
+        "Create_New_Chat_History": {
+          "runAfter": {
+            "Get_first_choice_response": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "14e5b1bf-0f5d-4496-ba6a-0a19da2c50bc"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NewChatHistory",
+                "type": "string",
+                "value": "@{variables('messagesForBody')},@{first(body('Parse_JSON')?['choices']).message},"
+              }
+            ]
+          }
+        },
+        "Initialize_message_history": {
+          "runAfter": {
+            "System_message": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1737f7d1-7b27-4d74-8474-32b1fbc5a28c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "messagesForBody",
+                "type": "string",
+                "value": "    @{triggerBody()['text_1']}\n    {\n      \"role\": \"user\",\n      \"content\": \"@{variables('userMessage')}\"\n    }"
+              }
+            ]
+          }
+        },
+        "Create_HTTP_body": {
+          "runAfter": {
+            "Initialize_message_history": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "9eb642dd-0ef2-4061-ac65-105c2c0707e2"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "httpBody",
+                "type": "string",
+                "value": "{\n  \"messages\": [\n@{variables('System message')}\n@{variables('messagesForBody')}\n  ],\n  \"temperature\": 0,\n  \"top_p\": 0.95,\n  \"frequency_penalty\": 0,\n  \"presence_penalty\": 0,\n  \"max_tokens\": 800,\n  \"stop\": null\n}"
+              }
+            ]
+          }
+        },
+        "Preprocess_user_message": {
+          "actions": {
+            "Remove_quotation_marks": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "911a9a72-2c8f-4439-82ad-21ef5d967848"
+              },
+              "type": "Compose",
+              "inputs": "@replace(variables('userMessage'),'\"','')"
+            },
+            "Update_clean_userMessage": {
+              "runAfter": {
+                "Remove_line_break": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "2731fae7-0c0b-402a-a5cf-c7244fd98904"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "userMessage",
+                "value": "@{outputs('Remove_line_break')}"
+              }
+            },
+            "Remove_new_line": {
+              "runAfter": {
+                "Remove_quotation_marks": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9ea1bb6d-77ff-42db-ac25-0009941061f8"
+              },
+              "type": "Compose",
+              "inputs": "@replace(outputs('Remove_quotation_marks'),'\\n','')"
+            },
+            "Remove_carriage_return": {
+              "runAfter": {
+                "Remove_new_line": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "e057d0e1-0627-4b45-8f5c-588cf0aed0d6"
+              },
+              "type": "Compose",
+              "inputs": "@replace(outputs('Remove_new_line'),'\\r',' ')"
+            },
+            "Remove_line_break": {
+              "runAfter": {
+                "Remove_carriage_return": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "386584a5-2825-4b9d-97f3-a8fae76681c8"
+              },
+              "type": "Compose",
+              "inputs": "@replace(outputs('Remove_carriage_return'),'\r\n',' ')"
+            }
+          },
+          "runAfter": {
+            "Initialize_userMessage_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "67e80c04-cb35-41ff-a870-583ae8ef4cda"
+          },
+          "type": "Scope"
+        },
+        "Initialize_userMessage_variable": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "d375c5d6-23bf-476e-8f94-eaa6b96d5e6a"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "userMessage",
+                "type": "string",
+                "value": "@triggerBody()['text']"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}

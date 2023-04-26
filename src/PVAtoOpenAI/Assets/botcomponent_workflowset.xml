@@ -1,0 +1,5 @@
+<botcomponent_workflowset>
+  <botcomponent_workflow botcomponentid.schemaname="cr705_sampleBuster.topic.Fallback" workflowid.workflowid="b9074813-c8e3-ed11-a7c7-000d3a8b7840">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+</botcomponent_workflowset>
