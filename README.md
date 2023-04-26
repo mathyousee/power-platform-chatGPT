@@ -3,13 +3,13 @@
 
 ## PVA to OpenAI
 
-![Sample chat between a Teams user and the bot](./images/buster-bot-sample.png)
-
 This sample seeks to provide an easy way to try out:
 
 - Using Power Virtual Agents for the rapid development of the bot, deployment to channels like Teams chat, and basic conversational flow
 - The bot calling the Azure OpenAI service for ChatGPT capabilities (e.g. GPT 3.5 completions model) to answer questions
 - Include prompt engineering to limit question scope and ensure the completions are used in line with Responsible AI principles
+
+![Sample chat between a Teams user and the bot](./images/buster-bot-sample.png)
 
 The use case for this sample was inspired by this Microsoft Healthcare and Life Sciences blog [Azure OpenAI ChatGPT Solves Cryptic Error Codes from Power BI, SQL Server, Power Apps, and more! - Microsoft Community Hub](https://techcommunity.microsoft.com/t5/healthcare-and-life-sciences/azure-openai-chatgpt-solves-cryptic-error-codes-from-power-bi/ba-p/3803661).
 
