@@ -3,6 +3,8 @@
 
 ## PVA to OpenAI
 
+
+
 ### Deploying the sample
 
 Prerequisites:
@@ -23,3 +25,10 @@ Steps:
    3. APIKEY - update to use one of the keys for the Azure OpenAI service
 5. Publish the *Sample-Buster* bot
 6. Deploy the bot to a channel (e.g. Teams channel)
+
+### Notes
+
+- This sample is provided as a learning tool to easily try out the capability, not presented as a final solution
+- The ChatGPT model is leveraged in the Power Virtual Agent as a *fallback* for when a structured Topic or Conversation Booster does not exist
+- As this is non-production sample, the API key is stored directly in the flow definition, KeyVault is a more secure approach 
+- This is structured to use Azure OpenAI, keeping control over the data passed to the service and ensuring the contents are not used to train vendors' models
